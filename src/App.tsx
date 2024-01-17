@@ -1,6 +1,6 @@
 import cookieImg from './assets/cookieImg.png'
 import styles from './App.module.css'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 function App() {
 
@@ -17,10 +17,17 @@ function App() {
     }
   })
 
+  useEffect(() => {
+    const savedGame = localStorage.getItem("game");
+    if (savedGame) {
+      setGame(JSON.parse(savedGame));
+    }
+  }, [])
+
   function handleSuperMouse() {
     if (game.cookiesAmount >= game.superMouse.price) {
       setGame((prev) => {
-        return {
+        const newGame = {
           ...prev,
           cookiesAmount: prev.cookiesAmount - prev.superMouse.price,
           superMouse: {
@@ -28,20 +35,26 @@ function App() {
             price: Math.floor(prev.superMouse.price * 1.3)
           }
         };
+
+        localStorage.setItem("game", JSON.stringify(newGame));
+        return newGame;
       })
     }
   }
 
   const handleCookieClick = () => {
     setGame((prev) => {
-      return { ...prev, cookiesAmount: prev.cookiesAmount + 1 + prev.superMouse.amount };
+      const newGame = { ...prev, cookiesAmount: prev.cookiesAmount + 1 + prev.superMouse.amount };
+
+      localStorage.setItem("game", JSON.stringify(newGame));
+      return newGame;
     })
   }
 
   const handleAutomaticClick = () => {
     if (game.cookiesAmount >= game.autoClicker.price) {
       setGame((prev) => {
-        return {
+        const newGame = {
           ...prev,
           cookiesAmount: prev.cookiesAmount - prev.autoClicker.price,
           autoClicker: {
@@ -50,13 +63,19 @@ function App() {
             isActive: true
           }
         }
+
+        localStorage.setItem("game", JSON.stringify(newGame));
+        return newGame;
       })
       setInterval(() => {
         setGame(prev => {
-          return {
+          const newGame = {
             ...prev,
             cookiesAmount: prev.cookiesAmount + prev.autoClicker.amount
           }
+
+          localStorage.setItem("game", JSON.stringify(newGame));
+          return newGame;
         })
       }, 1000)
     }
