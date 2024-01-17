@@ -34,7 +34,7 @@ function App() {
 
   const handleCookieClick = () => {
     setGame((prev) => {
-      return { ...prev, cookiesAmount: prev.cookiesAmount + 1 };
+      return { ...prev, cookiesAmount: prev.cookiesAmount + 1 + prev.superMouse.amount };
     })
   }
 
@@ -51,9 +51,14 @@ function App() {
           }
         }
       })
-    }
-    if (game.autoClicker.isActive) {
-      setTimeout(handleAutomaticClick, 1000)
+      setInterval(() => {
+        setGame(prev => {
+          return {
+            ...prev,
+            cookiesAmount: prev.cookiesAmount + prev.autoClicker.amount
+          }
+        })
+      }, 1000)
     }
   }
 
@@ -62,8 +67,8 @@ function App() {
     <main className={styles['container']}>
       <div className={styles['game-card']}>
         <div className={styles['cookie-display']}>
-          <p>{game.cookiesAmount} COOKIES (0/s)</p>
-          <p>1 p/ click</p>
+          <p>{game.cookiesAmount} COOKIES ({game.autoClicker.amount}/s)</p>
+          <p>{1 + game.superMouse.amount} p/ click</p>
         </div>
         <button id={styles['button-cookie']} onClick={handleCookieClick}>
           <img src={cookieImg} alt="imagem cookie" />
