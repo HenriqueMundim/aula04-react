@@ -18,6 +18,20 @@ function App() {
   })
 
   useEffect(() => {
+    if (game.autoClicker.isActive) {
+      setInterval(() => {
+        setGame(prev => {
+          const newGame = {
+            ...prev,
+            cookiesAmount: prev.cookiesAmount + prev.autoClicker.amount
+          }
+
+          localStorage.setItem("game", JSON.stringify(newGame));
+          return newGame;
+        })
+      }, 1000)
+    }
+
     const savedGame = localStorage.getItem("game");
     if (savedGame) {
       setGame(JSON.parse(savedGame));
